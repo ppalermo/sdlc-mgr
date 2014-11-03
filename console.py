@@ -20,6 +20,8 @@ def main():
       option = admin.adminMenu()
       if option == '1':
         admin.setFalsePositive()
+      elif option == '2':
+        admin.acceptFlaw()
 
 if __name__ == '__main__':
   main()
