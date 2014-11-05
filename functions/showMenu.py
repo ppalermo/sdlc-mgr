@@ -14,7 +14,8 @@ def MainMenu():
   print "- List modules with SEV4 and SEV5 Flaws: \"3\" \n "
   print "- List details of \"High Severity\" Flaws by buildID: \"4\" \n "
   print "- List details of \"VERY High Severity\" Flaws by buildID: \"5\" \n "
-  print "- Go To Admin Menu: \"6\" \n "
+  print "- Get Flaws Summary by build ID: \"6\" \n "
+  print "- Go To Admin Menu: \"7\" \n "
 
   print "\n-QUIT: \"exit\""
   opt = raw_input()

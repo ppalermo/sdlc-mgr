@@ -96,3 +96,51 @@ def getSev5Flaws():
   z = raw_input()
 
 
+def getFlawsSummary():
+  appusr = raw_input("Please enter API User: \n")
+  apppass = getpass.getpass("Please enter API Password: \n")
+  buildID = raw_input("Please enter Build ID: \n")
+  cmd = "curl -s --compressed -u " + appusr + ":" + apppass + " https://analysiscenter.veracode.com/api/2.0/detailedreport.do?build_id=" + buildID
+  s,o = commands.getstatusoutput(cmd)
+  document = ET.ElementTree(ET.fromstring(o))
+  root = document.getroot()
+  totalsev5 = 0
+  totalsev4 = 0
+  totalsev3 = 0
+  totalsev2 = 0
+  totalsev1 = 0
+  totalsev0 = 0
+  #Get all sev5 flaws..
+  sev5flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='5']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev5 in sev5flaws:
+    totalsev5 += 1
+  #Get all sev4 flaws..
+  sev4flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='4']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev4 in sev4flaws:
+    totalsev4 += 1
+  #Get all sev3 flaws..
+  sev3flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='3']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev3 in sev3flaws:
+    totalsev3 += 1
+  #Get all sev2 flaws..
+  sev2flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='2']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev2 in sev2flaws:
+    totalsev2 += 1
+  #Get all sev1 flaws..
+  sev1flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='1']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev1 in sev1flaws:
+    totalsev1 += 1
+  #Get all sev0 flaws..
+  sev0flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='0']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+  for sev0 in sev0flaws:
+    totalsev0 += 1
+  #Print totals:
+  print "Total number of Severity 5 flaws: %d \n" %totalsev5
+  print "Total number of Severity 4 flaws: %d \n" %totalsev4
+  print "Total number of Severity 3 flaws: %d \n" %totalsev3
+  print "Total number of Severity 2 flaws: %d \n" %totalsev2
+  print "Total number of Severity 1 flaws: %d \n" %totalsev1
+  print "Total number of Severity 0 flaws: %d \n" %totalsev0
+  print "Total number of Flaws found: %d \n" %(totalsev0+totalsev1+totalsev2+totalsev3+totalsev4+totalsev5)
+  z = raw_input()
+

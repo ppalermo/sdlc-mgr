@@ -15,8 +15,10 @@ def main():
       results.getSev4Flaws()
     elif option == '5':
       results.getSev5Flaws()
-    #Below starts the Admin Menu stuff...
     elif option == '6':
+      results.getFlawsSummary()
+    #Below starts the Admin Menu stuff...
+    elif option == '7':
       option = admin.adminMenu()
       if option == '1':
         admin.setFalsePositive()
