@@ -20,6 +20,7 @@ def listApps():
 
 
 def getBuild():
+  #curl -s --compressed -u pablo.palermo@rightside.co:PASSWORD https://analysiscenter.veracode.com/api/4.0/getbuildlist.do -F "app_id=92662" > /Users/martin/Desktop/getbuildlist.do.xml
   appusr = raw_input("Please enter API User: \n")
   apppass = getpass.getpass("Please enter API Password: \n")
   appID = raw_input("Please enter Application ID: \n")
@@ -29,7 +30,7 @@ def getBuild():
   root = document.getroot()
   print "Your build IDs are the following:...\n"
   for child in root:
-    print "Build ID: %s" % child.attrib['build_id']
+    print "Build ID: %s, Version Date: %s" % (child.attrib['build_id'], child.attrib['version'])
   print "\n"
   z = raw_input()
 
