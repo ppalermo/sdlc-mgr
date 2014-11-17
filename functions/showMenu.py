@@ -16,6 +16,7 @@ def MainMenu():
   print "- List details of \"VERY High Severity\" Flaws by buildID: \"5\" \n "
   print "- Get Flaws Summary by build ID: \"6\" \n "
   print "- Go To Admin Menu: \"7\" \n "
+  print "- Go to Users ADMINISTRATION: \"8\" \n "
 
   print "\n-QUIT: \"exit\""
   opt = raw_input()
