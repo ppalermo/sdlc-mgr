@@ -36,11 +36,15 @@ class Flaw(object):
     self.created             = ''
 
 
-def returnSev4(xmlpath, appname):
+def returnSev4(xmlpath, appname, confpath):
   """This function is going to take a path where the
   xml detailed report resides and it will parse the results,
   and then store the values required to fill up the DB
   within a flaw class"""
+  f = open(confpath, 'rU')
+  conf = [] #list to save DB config.
+  for line in f:
+    conf.append(line.rstrip('\n'))
   #datetime.now().strftime("%H:%M:%S") ==> Hour  Minutes  Seconds '11:22:32'
   now = datetime.now()
   #now.strftime("%m-%d-%Y") Date format ==> Month Day Year.
@@ -53,7 +57,7 @@ def returnSev4(xmlpath, appname):
   sev4flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='4']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
   #COnnect to the DB:
   try:
-    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd="9.01jdksoq*", db="infosecsdlc")
+    db = MySQLdb.connect(conf[0], conf[1], conf[2], conf[3], conf[4])
     cur = db.cursor()
   except Exception, e: print repr(e)
 
