@@ -1,0 +1,5 @@
+*.log
+*.conf
+*.ini
+./functions/*.conf
+./functions/*.cfg
