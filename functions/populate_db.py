@@ -40,7 +40,7 @@ class Flaw(object):
     self.created             = ''
 
 
-def returnSev4(xmlpath, appname):
+def returnSev4Sev5(xmlpath, appname):
   """This function is going to take a path where the
   xml detailed report resides and it will parse the results,
   and then store the values required to fill up the DB
@@ -56,6 +56,7 @@ def returnSev4(xmlpath, appname):
   DATETIME = now.strftime("%Y-%m-%d") + ' ' + datetime.now().strftime("%H:%M:%S")
   pos = 0
   sev4_list = []
+  sev5_list = []
   document = ET.parse(xmlpath)
   root = document.getroot()
   sev4flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='4']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
@@ -64,7 +65,6 @@ def returnSev4(xmlpath, appname):
     db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd="", db="infosecsdlc")
     cur = db.cursor()
   except Exception, e: print repr(e)
-
   comstr = "commit"
 
   pol_comp = ['1','0'] #This is used for the list comprehension down below within the for loop. (sev4_list[pos].affects_pol_comp)
@@ -95,13 +95,40 @@ def returnSev4(xmlpath, appname):
       cur.execute(sSql)
     except Exception, e: print repr(e)
     cur.execute(comstr)
-  #for flaw in sev4_list:
-  #  print flaw.app_name
+
+  sev5flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='5']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
+
+  for sev5 in sev4flaws:
+    sev5_list.append (Flaw(sev5.attrib['issueid']))
+    sev5_list[pos].cweid              = sev5.attrib['cweid']
+    sev5_list[pos].pcirelated         = sev5.attrib['pcirelated']
+    sev5_list[pos].datefo             = sev5.attrib['date_first_occurrence']
+    sev5_list[pos].remediation        = sev5.attrib['remediation_status']
+    sev5_list[pos].mitigation         = sev5.attrib['mitigation_status']
+    sev5_list[pos].severity           = sev5.attrib['severity']
+    sev5_list[pos].catname            = sev5.attrib['categoryname'].replace("'","")
+    sev5_list[pos].module             = sev5.attrib['module']
+    sev5_list[pos].sourcepath         = sev5.attrib['sourcefilepath']
+    sev5_list[pos].sourcefile         = sev5.attrib['sourcefile']
+    sev5_list[pos].linenum            = sev5.attrib['line']
+    sev5_list[pos].affects_pol_comp   = [ pol_comp[0] if  sev4.attrib['affects_policy_compliance'] in 'true' else pol_comp[1] ][0]
+    sev5_list[pos].gp_expires         = sev4.attrib['grace_period_expires']
+    sev5_list[pos].app_name           = appname
+    sev5_list[pos].istracked          = False
+    sev5_list[pos].created            = DATETIME
+    sSql="insert into flaws (issueid,cweid,pcirelated,date_first_occurrence,remediation,mitigation,severity,categoryname,module,sourcepath,sourcefile,linenumber,affects_pol_comp,gp_expires,app_name,istracked,created) \
+    VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s', '%s', '%s')"  %(sev4_list[pos].flawid, sev4_list[pos].cweid, sev4_list[pos].pcirelated, sev4_list[pos].datefo, sev4_list[pos].remediation, sev4_list[pos].mitigation, sev4_list[pos].severity, sev4_list[pos].catname, sev4_list[pos].module, sev4_list[pos].sourcepath, sev4_list[pos].sourcefile, sev4_list[pos].linenum, sev4_list[pos].affects_pol_comp, sev4_list[pos].gp_expires, sev4_list[pos].app_name, sev4_list[pos].istracked, sev4_list[pos].created)
+    #print sSql, '\n\n'
+    pos += 1
+    try:
+      cur.execute(sSql)
+    except Exception, e: print repr(e)
+      cur.execute(comstr)
 
 def main():
   application_name = raw_input("Please enter Application Name: \n")
   path = raw_input("Please enter PATH: \n")
-  returnSev4(path,application_name)
+  returnSev4Sev5(path,application_name)
 
 if __name__ == '__main__':
   main()
