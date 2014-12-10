@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 import json
 import commands
+import keyring
 
 #Below function can be used to either fecth one only row, or ALL rows from
 #a select statement.
@@ -36,12 +37,17 @@ def reedFlawsFromDB(logpath):
   #Conexion a la DB:
   logging.info('Attempting DB Connection now: ' + timeStamp())
   try:
-    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd="", db="infosecsdlc")
+    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd=(keyring.get_password('sdlcdb','sdlf-mgr')), db="infosecsdlc")
     cur = db.cursor()
   except Exception, e: print repr(e)
   logging.info('DB Connection Successful: ' + timeStamp())
   #store query results in a list:
   results = []
+  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
+  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
+  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
+  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
+
   sSql = "SELECT * FROM flaws WHERE istracked='0' and issueid = '4'"
   logging.info('Running SQL Queries now: ' + timeStamp())
   cur.execute(sSql)
@@ -101,13 +107,14 @@ def reedFlawsFromDB(logpath):
 
     if s == 0:                  #CURL SUCCESSFUL.
       logging.info("Bug created successfuly...Updating DB...")
+      #HERE UPDATING THE DB.......
       logging.info(timeStamp())
       bugid = decoded_json['id']
       createdat = decoded_json['created_at']
       current_state = decoded_json['current_state']
       updated_at    = decoded_json['updated_at']
       #Now is time to update the DB:
-      sSql_i = "insert into flawstrack (flawid, appname, trackername, openeddate, status, updatedat) VALUES('%s','%s','%s','%s','%s','%s')" %(bugid,'name.com', 'Pivotal Tracker', createdat, 'Open',createdat)
+      sSql_i = "insert into flawstrack (flawid, appname, trackername, openeddate, status, updatedat, trackingnumber) VALUES('%s','%s','%s','%s','%s','%s','%s')" %(v5_ID,'name.com', 'Pivotal Tracker', createdat, 'Open',createdat, bugid)
       cur.execute(sSql_i)
       cur.execute(comstr)
       sSql_u = "update flaws set istracked='1' where issueid='%s'" %v5_ID
@@ -118,6 +125,7 @@ def reedFlawsFromDB(logpath):
     else:
       logging.error("There was a problem creating the Bug...error following:")
       logging.error(o)
+      cur.close()
 
 """
 for key in decoded_json.keys():

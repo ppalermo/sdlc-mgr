@@ -15,9 +15,13 @@ Do not use slashes in the name or periods at the beginning or end of the name.
 
 """
 #Source: https://analysiscenter.veracode.com/auth/helpCenter/api/r_uploadfile.html
-import xml.etree.cElementTree as ET
-import commands
-import os
+#import xml.etree.cElementTree as ET
+#import commands
+#import os
+import ConfigParser
+import logging
+
+#configpath = '/Users/martin/GitHub/sdlc-manager/functions/veracode.cfg'
 
 def uploadbuild():
   resource_url = 'https://analysiscenter.veracode.com/api/4.0/uploadfile.do'

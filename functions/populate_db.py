@@ -2,10 +2,11 @@
 """YOU NEED TO PASS THE LOGGING PATH TO THIS FUNCTION OTHERWISE IT WILL NOT WORK!"""
 """YOU NEED TO PASS THE LOGGING PATH TO THIS FUNCTION OTHERWISE IT WILL NOT WORK!"""
 """YOU NEED TO PASS THE LOGGING PATH TO THIS FUNCTION OTHERWISE IT WILL NOT WORK!"""
+#name.com app id = 92662
 import xml.etree.cElementTree as ET
 import commands
 import os
-import getpass
+import keyring
 import MySQLdb
 from datetime import datetime
 
@@ -39,6 +40,33 @@ class Flaw(object):
     self.istracked           = False
     self.created             = ''
 
+def grabReport():
+  '''This function grabs the detailed report from veracode.
+  Might want to modify it so that it gets the app id / app name from parameter.
+  '''
+  appusr = 'pablo.palermo@rightside.co'
+  apppass = str(keyring.get_password('veracodekeytoken', 'pablo.palermo@rightside.co'))
+  appID = '92662'
+  #Getting latest build below:
+  cmd = "curl -s --compressed -u " + appusr + ":" + apppass + " https://analysiscenter.veracode.com/api/4.0/getbuildlist.do -F \"app_id=\"" + appID
+  s,o = commands.getstatusoutput(cmd)
+  document = ET.ElementTree(ET.fromstring(o))
+  root = document.getroot()
+  list_of_builds = []
+  for child in root:
+    list_of_builds.append(child.attrib['build_id'])
+  latest_build = list_of_builds[-1]
+  #Done.
+  #Now grabbing the latest detailed xml report based on latest build:
+  cmd2 = "curl -s --compressed -u " + appusr + ":" + apppass + " https://analysiscenter.veracode.com/api/2.0/detailedreport.do?build_id=" + latest_build
+  s2,o2 = commands.getstatusoutput(cmd2)
+  #Saving the file....
+  rep_path ='/home/sdlcmgrapp/home/veracode/name.com/detailed_' + now.strftime("%Y_%m_%d") + '_b' + latest_build + '.xml'
+  detailed_xml = open(rep_path, 'w')
+  detailed_xml.write(o2)
+  #Done.
+  return rep_path
+
 
 def returnSev4Sev5(xmlpath, appname):
   """This function is going to take a path where the
@@ -62,7 +90,7 @@ def returnSev4Sev5(xmlpath, appname):
   sev4flaws = root.findall("./{https://www.veracode.com/schema/reports/export/1.0}severity/[@level='4']/*/{https://www.veracode.com/schema/reports/export/1.0}cwe/*/{https://www.veracode.com/schema/reports/export/1.0}flaw")
   #COnnect to the DB:
   try:
-    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd="", db="infosecsdlc")
+    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd=(keyring.get_password('sdlcdb','sdlf-mgr')), db="infosecsdlc")
     cur = db.cursor()
   except Exception, e: print repr(e)
   comstr = "commit"
@@ -125,10 +153,10 @@ def returnSev4Sev5(xmlpath, appname):
     except Exception, e: print repr(e)
       cur.execute(comstr)
 
+
 def main():
-  application_name = raw_input("Please enter Application Name: \n")
-  path = raw_input("Please enter PATH: \n")
-  returnSev4Sev5(path,application_name)
+  xmlpath = grabReport()
+  returnSev4Sev5(xmlpath, 'name.com')
 
 if __name__ == '__main__':
   main()
