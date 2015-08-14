@@ -8,11 +8,7 @@ from datetime import datetime
 
 def grabPackage():
   """
-  Description: md5 the files
-  trace prace GRC. securty compliance.
-  American Airlines 1232. - Miami - LAX.
-
-  """ 05
+  Description: md5 the files"" 05
   """
 
 
