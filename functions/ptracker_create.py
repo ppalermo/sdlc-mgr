@@ -36,15 +36,12 @@ def reedFlawsFromDB(logpath):
   #Conexion a la DB:
   logging.info('Attempting DB Connection now: ' + timeStamp())
   try:
-    db = MySQLdb.connect(host="10.7.240.202", port=3306, user="sdlf-mgr", passwd=(keyring.get_password('sdlcdb','sdlf-mgr')), db="infosecsdlc")
+    db = MySQLdb.connect(host="", port=3306, user="sdlf-mgr", passwd=(keyring.get_password('sdlcdb','sdlf-mgr')), db="")
     cur = db.cursor()
   except Exception, e: print repr(e)
   logging.info('DB Connection Successful: ' + timeStamp())
   #store query results in a list:
   results = []
-  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
-  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
-  """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
   """GOTTA update these QUERY BELOW!!!!!!!!!!!!!!!!!!!!"""
 
   sSql = "SELECT * FROM flaws WHERE istracked='0' and issueid = '4'"
