@@ -20,7 +20,7 @@ def listApps():
 
 
 def getBuild():
-  #curl -s --compressed -u pablo.palermo@rightside.co:PASSWORD https://analysiscenter.veracode.com/api/4.0/getbuildlist.do -F "app_id=92662" > /Users/martin/Desktop/getbuildlist.do.xml
+  #curl -s --compressed -u USER:PASSWORD https://analysiscenter.veracode.com/api/4.0/getbuildlist.do -F "app_id=ID" > path
   appusr = raw_input("Please enter API User: \n")
   apppass = getpass.getpass("Please enter API Password: \n")
   appID = raw_input("Please enter Application ID: \n")
@@ -42,7 +42,7 @@ def getHighFlaws():
   cmd = "curl -s --compressed -u " + appusr + ":" + apppass + " https://analysiscenter.veracode.com/api/2.0/detailedreport.do?build_id=" + buildID
   #cmd = "curl -s --compressed -u " + username + ":" + password + " https://analysiscenter.veracode.com/api/2.0/detailedreport.do?build_id=" + buildID
   s,o = commands.getstatusoutput(cmd)
-  #outfile = open ('/Users/martin/Dropbox/Python/SCRIPTS/Python/scripts/2014/RSide/output.txt', 'w')
+  #outfile = open ('/output.txt', 'w')
   #outfile.write(o)
   #outfile.close()
   #print "File saved to disk!"
