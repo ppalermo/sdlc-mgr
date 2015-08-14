@@ -1,6 +1,5 @@
 #!/usr/bin/python2.7
 #/Users/martin/Desktop/log.txt
-"""YOU NEED TO PASS THE LOGGING PATH TO THIS FUNCTION OTHERWISE IT WILL NOT WORK!"""
 """Need to add Pivotal Tracker's TOKEN too"""
 import MySQLdb
 from datetime import datetime
@@ -58,7 +57,7 @@ def reedFlawsFromDB(logpath):
   #at this point I have a list of dictionaries where all my queries' results are stored.
 
   #Below all the fixed values (always the same).
-  CURL_BASE = 'curl -s -X POST -H "X-TrackerToken:54ea5485696ab1958eaf3e76ae6d8ca1" -H "Content-Type: application/json" -d'
+  CURL_BASE = 'curl -s -X POST -H "X-TrackerToken:TOKEN" -H "Content-Type: application/json" -d'
   CURL_TAIL = '"https://www.pivotaltracker.com/services/v5/projects/169315/stories"'
   CWE_BASE_URL = 'http://cwe.mitre.org/data/definitions/'
 
